@@ -1,0 +1,98 @@
+---
+title: "Euan Analysis"
+output: html_notebook
+---
+
+
+```{r}
+source(file = "cleaning.R")
+```
+
+
+
+```{r}
+inputs <- list(
+  admission_input = "Emergency Inpatients",
+  sex_input = "Female",
+  age_input = "40-49 years"
+  
+)
+```
+
+
+
+
+
+```{r}
+
+bot_simd_clean %>% 
+  filter(admission_type == inputs$admission_input) %>% 
+  group_by(simd) %>% 
+  summarise(total_episodes = sum(episodes)) %>% 
+  ggplot()+
+  aes(x = simd,
+      y = total_episodes,
+      fill = as.factor(simd)) +
+  geom_col() +
+  theme_minimal()+
+  labs(
+    x = "SIMD Level",
+    y = "Total Episodes"
+  ) +
+  theme(
+    legend.position = "none"
+  )
+```
+
+```{r}
+bot_sex_clean %>% 
+  filter(sex %in% inputs$sex_input) %>% 
+  group_by(age) %>% 
+  summarise(total_episodes = sum(episodes)) %>% 
+  ggplot()+
+  aes(x = age,
+      y = total_episodes,
+      fill = as.factor(age)) +
+  geom_col() +
+  theme_minimal()+
+  labs(
+    x = "\nAge Ranges",
+    y = "Total Episodes\n",
+    title = case_when(
+      inputs$sex_input == "Female" ~ "Female Episodes by Age Range",
+      inputs$sex_input == "Male" ~ "Male Episodes by Age Range",
+      TRUE ~ "Episodes by Age Range"
+    )
+  ) +
+  theme(
+    legend.position = "none",
+    axis.text.x = element_text(angle = 315,
+                               vjust = 0.2,
+                               hjust = 0.5)
+  )
+
+
+```
+
+
+```{r}
+bot_sex_clean %>% 
+  filter(age == inputs$age_input,
+         admission_type %in% c("Elective Inpatients",
+                               "Emergency Inpatients")) %>% 
+  group_by(age, admission_type) %>% 
+  summarise(tot_episodes = sum(episodes)) %>% 
+  ggplot()+
+  aes(x = age,
+      y = tot_episodes,
+      fill = admission_type) +
+  geom_col(position = "dodge")
+```
+
+
+
+
+
+
+
+
