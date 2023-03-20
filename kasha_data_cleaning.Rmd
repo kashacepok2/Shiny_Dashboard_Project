@@ -1,0 +1,171 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+# Shiny Dashboard - cleaning and analysis for question's 4-6
+
+## Bed Occupancy
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(lubridate)
+library(stringr)
+
+beds <- read_csv("raw_data/by_board_of_treatment/beds_by_nhs_board_of_treatment_and_specialty.csv")
+
+beds
+```
+```{r}
+beds_clean <- beds %>% 
+  select(- c("PercentageOccupancyQF",
+         "AverageOccupiedBedsQF",
+         "AverageAvailableStaffedBedsQF",
+         "TotalOccupiedBeddaysQF",
+         "AllStaffedBeddaysQF",
+         "SpecialtyNameQF",
+         "SpecialtyQF", 
+         "LocationQF",
+         "HBQF",
+         "QuarterQF",
+         "Specialty")) %>% 
+  clean_names() %>%
+  mutate(quarter = str_replace(quarter, "Q1", "-01-01")) %>% 
+  mutate(quarter = str_replace(quarter, "Q2", "-04-01")) %>% 
+  mutate(quarter = str_replace(quarter, "Q3", "-07-01")) %>% 
+  mutate(quarter = str_replace(quarter, "Q4", "-10-01")) %>% 
+  mutate(quarter = ymd(quarter)) 
+```
+
+```{r}
+beds_clean %>% 
+  filter(specialty_name == "All Specialties") %>% 
+  group_by(location) %>%
+  ggplot() +
+    aes(x = quarter, y = percentage_occupancy, colour = location) +
+    geom_line()
+```
+
+## Demographics by treatment board
+
+```{r}
+treatment_age_sex <- read_csv("raw_data/by_board_of_treatment/inpatient_and_daycase_by_nhs_board_of_treatment_age_and_sex.csv")
+
+treatment_age_sex_clean <- treatment_age_sex %>% 
+  select(- c("QuarterQF", "HBQF", "LocationQF", "AdmissionTypeQF", "AverageLengthOfEpisodeQF", "AverageLengthOfStayQF")) %>% 
+  clean_names() %>% 
+  mutate(quarter = str_replace(quarter, "Q1", "-01-01")) %>% 
+  mutate(quarter = str_replace(quarter, "Q2", "-04-01")) %>% 
+  mutate(quarter = str_replace(quarter, "Q3", "-07-01")) %>% 
+  mutate(quarter = str_replace(quarter, "Q4", "-10-01")) %>% 
+  mutate(quarter = ymd(quarter)) %>% 
+  pivot_longer(cols = c("sex", "age"),
+               names_to = "demographic",
+               values_to = "value")
+  
+```
+
+```{r}
+treatment_simd <- read_csv("raw_data/by_board_of_treatment/inpatient_and_daycase_by_nhs_board_of_treatment_and_simd.csv")
+
+treatment_simd_clean <- treatment_simd %>% 
+  select(- c("QuarterQF", "HBQF", "LocationQF", "AdmissionTypeQF", "AverageLengthOfEpisodeQF", "AverageLengthOfStayQF", "SIMDQF")) %>% 
+  clean_names() %>% 
+  mutate(quarter = str_replace(quarter, "Q1", "-01-01")) %>% 
+  mutate(quarter = str_replace(quarter, "Q2", "-04-01")) %>% 
+  mutate(quarter = str_replace(quarter, "Q3", "-07-01")) %>% 
+  mutate(quarter = str_replace(quarter, "Q4", "-10-01")) %>% 
+  mutate(quarter = ymd(quarter)) %>% 
+  pivot_longer(cols = simd,
+               names_to = "demographic",
+               values_to = "value") %>% 
+  mutate(value = as.character(value))
+```
+
+```{r}
+treatment_specialty <- read_csv("raw_data/by_board_of_treatment/inpatient_and_daycase_by_nhs_board_of_treatment_and_specialty.csv")
+
+treatment_specialty_clean <- treatment_specialty %>% 
+  select(- c("QuarterQF", "HBQF", "LocationQF", "AdmissionTypeQF", "AverageLengthOfEpisodeQF", "AverageLengthOfSpellQF", "Specialty")) %>% 
+  clean_names() %>% 
+  rename(stays = spells) %>% 
+  rename(length_of_stay = length_of_spell) %>% 
+  rename(average_length_of_stay = average_length_of_spell) %>%
+  rename(specialty = specialty_name) %>% 
+  mutate(quarter = str_replace(quarter, "Q1", "-01-01")) %>% 
+  mutate(quarter = str_replace(quarter, "Q2", "-04-01")) %>% 
+  mutate(quarter = str_replace(quarter, "Q3", "-07-01")) %>% 
+  mutate(quarter = str_replace(quarter, "Q4", "-10-01")) %>% 
+  mutate(quarter = ymd(quarter)) %>% 
+    pivot_longer(cols = specialty,
+               names_to = "demographic",
+               values_to = "value")
+```
+
+```{r}
+binded_data_1 <- bind_rows(treatment_age_sex_clean, treatment_simd_clean)
+
+covid_by_treatment_board <- bind_rows(binded_data_1, treatment_specialty_clean)
+```
+
+## Demographics by board of residency
+
+```{r}
+res_age_sex <- read_csv("raw_data/by_board_of_residence/inpatient_and_daycase_by_nhs_board_of_residence_age_and_sex.csv")
+
+res_age_sex_clean <- res_age_sex %>% 
+  select(- c("QuarterQF", "HBQF", "LocationQF", "AdmissionTypeQF", "AverageLengthOfEpisodeQF", "AverageLengthOfStayQF")) %>% 
+  clean_names() %>% 
+  mutate(quarter = str_replace(quarter, "Q1", "-01-01")) %>% 
+  mutate(quarter = str_replace(quarter, "Q2", "-04-01")) %>% 
+  mutate(quarter = str_replace(quarter, "Q3", "-07-01")) %>% 
+  mutate(quarter = str_replace(quarter, "Q4", "-10-01")) %>% 
+  mutate(quarter = ymd(quarter)) %>% 
+  pivot_longer(cols = c("sex", "age"),
+               names_to = "demographic",
+               values_to = "value")
+```
+
+```{r}
+res_simd <- read_csv("raw_data/by_board_of_residence/inpatient_and_daycase_by_nhs_board_of_residence_and_simd.csv")
+
+res_simd_clean <- res_simd %>% 
+  select(- c("QuarterQF", "HBQF", "LocationQF", "AdmissionTypeQF", "AverageLengthOfEpisodeQF", "AverageLengthOfStayQF", "SIMDQF")) %>% 
+  clean_names() %>% 
+  mutate(quarter = str_replace(quarter, "Q1", "-01-01")) %>% 
+  mutate(quarter = str_replace(quarter, "Q2", "-04-01")) %>% 
+  mutate(quarter = str_replace(quarter, "Q3", "-07-01")) %>% 
+  mutate(quarter = str_replace(quarter, "Q4", "-10-01")) %>% 
+  mutate(quarter = ymd(quarter)) %>% 
+  pivot_longer(cols = simd,
+               names_to = "demographic",
+               values_to = "value") %>% 
+  mutate(value = as.character(value))
+```
+
+```{r}
+res_specialty <- read_csv("raw_data/by_board_of_residence/inpatient_and_daycase_by_nhs_board_of_residence_and_specialty.csv")
+
+res_specialty_clean <- res_specialty %>% 
+  select(- c("QuarterQF", "HBQF", "LocationQF", "AdmissionTypeQF", "AverageLengthOfEpisodeQF", "AverageLengthOfSpellQF", "Specialty")) %>% 
+  clean_names() %>% 
+  rename(stays = spells) %>% 
+  rename(length_of_stay = length_of_spell) %>% 
+  rename(average_length_of_stay = average_length_of_spell) %>%
+  rename(specialty = specialty_name) %>% 
+  mutate(quarter = str_replace(quarter, "Q1", "-01-01")) %>% 
+  mutate(quarter = str_replace(quarter, "Q2", "-04-01")) %>% 
+  mutate(quarter = str_replace(quarter, "Q3", "-07-01")) %>% 
+  mutate(quarter = str_replace(quarter, "Q4", "-10-01")) %>% 
+  mutate(quarter = ymd(quarter)) %>% 
+    pivot_longer(cols = specialty,
+               names_to = "demographic",
+               values_to = "value")
+```
+
+```{r}
+binded_data_2 <- bind_rows(res_age_sex_clean, res_simd_clean)
+
+covid_by_res_board <- bind_rows(binded_data_2, res_specialty_clean)
+```
