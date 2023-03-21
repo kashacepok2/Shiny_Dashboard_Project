@@ -11,11 +11,12 @@ ui <- fluidPage(
         column(
           2,
           radioButtons(
-            inputId = "lockdown_id",
+            inputId = "lockdown_input",
             label = h3("Select dates relative to first UK lockdown:"),
             choices = c(
               "Before first UK lockdown" = "pre",
-              "After first UK lockdown" = "post"
+              "After first UK lockdown" = "post",
+              "Both" = "both"
             )
           )
         ),
