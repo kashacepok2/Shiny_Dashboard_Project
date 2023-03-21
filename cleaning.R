@@ -6,6 +6,8 @@ bot_sex <- clean_names(read_csv(here("raw_data/by_board_of_treatment/inpatient_a
 
 bot_simd <- clean_names(read_csv(here("raw_data/by_board_of_treatment/inpatient_and_daycase_by_nhs_board_of_treatment_and_simd.csv")))
 
+covid_simd <- clean_names(read_csv(here("raw_data/total_cases_simd_20230315.csv")))
+
 clean_location<- function(table) {
   unique(table %>% 
            select(!ends_with("qf"))) %>% 

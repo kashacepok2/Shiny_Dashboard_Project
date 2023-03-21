@@ -160,10 +160,43 @@ bot_simd_clean %>%
 ```
 
 
+```{r}
+ggplotly(covid_simd %>% 
+
+  ggplot() +
+    aes(
+      x = simd_quintile,
+      y = first_infections,
+      fill = as.factor(simd_quintile),
+      text = first_infections
+    ) +
+    geom_col()
+)
+```
 
 
 
+```{r}
+ggplotly(covid_simd %>% 
+
+  ggplot() +
+    aes(
+      x = simd_quintile,
+      y = reinfections,
+      text = reinfections
+    ) +
+    geom_col(fill = "blue") +
+    theme_minimal(),
+  tooltip = "text"
+)
+```
 
 
+```{r}
+bot_sex_clean %>% 
+  filter(age == "0-9 years") %>% 
+  group_by(sex) %>% 
+  summarise(mean(episodes))
+```
 
 

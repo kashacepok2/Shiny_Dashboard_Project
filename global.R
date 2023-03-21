@@ -39,6 +39,9 @@ simd_stack <- ggplotly(
       y = "Total Episodes\n",
       fill = "Admission Type",
       title = "Total Episodes by Inpatient Type and Deprivation Quintile"
+    ) +
+    scale_y_continuous(
+      n.breaks = 10
     ),
   tooltip = "text"
 )
@@ -64,7 +67,13 @@ simd_flip <- ggplotly(
       fill = "Admission Type",
       title = "Total Episodes by Inpatient Type and Deprivation Quintile"
     ) +
-    coord_flip(),
+    theme(
+      axis.text.x = element_text(angle = 315,
+                                 hjust = -0.1) 
+    ) +   coord_flip() +
+    scale_y_continuous(
+      n.breaks = 10
+    ),
   tooltip = "text"
 )
 
@@ -88,6 +97,9 @@ simd_dodge <- ggplotly(
       y = "Total Episodes\n",
       fill = "Admission Type",
       title = "Total Episodes by Inpatient Type and Deprivation Quintile"
+    )+
+    scale_y_continuous(
+      n.breaks = 10
     ),
   tooltip = "text"
 )
