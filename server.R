@@ -49,7 +49,7 @@ server <- function(input, output, session) {
                      fill = sex,
                      text = total_episodes) +
                  geom_col(position = "dodge") +
-                 theme_minimal()+
+                 theme_minimal() +
                  labs(
                    x = "\nAge Ranges",
                    y = "Total Episodes\n",
@@ -66,7 +66,7 @@ server <- function(input, output, session) {
   else{
     ggplotly(bot_sex_clean %>% 
                filter(age %in% input$age_input) %>% 
-               group_by(age,sex) %>% 
+               group_by(age, sex) %>% 
                summarise(total_episodes = sum(episodes)) %>% 
                ggplot()+
                aes(x = age,

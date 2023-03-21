@@ -3,7 +3,6 @@
 
 ui <- fluidPage(
   titlePanel("Covid App"),
-  
   tabsetPanel(
     tabPanel(
       "Demographics",
@@ -25,11 +24,12 @@ ui <- fluidPage(
           checkboxGroupInput(
             inputId = "age_input",
             label = h3("Select age ranges:"), 
-            choices = ages_list)
+            choices = ages_list
+            ))
         ),
         column(
           3,
-          offset = 3,
+          offset = 4,
           selectInput(
             inputId =  "bar_input", 
             label = h3("Select bar style for SIMD plot:"), 
@@ -57,4 +57,3 @@ ui <- fluidPage(
       )
     )
   )
-)
