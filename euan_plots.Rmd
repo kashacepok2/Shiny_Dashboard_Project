@@ -2,6 +2,9 @@
 title: "Euan Analysis"
 output: html_notebook
 ---
+```{r}
+library(plotly)
+```
 
 
 ```{r}
@@ -14,7 +17,7 @@ source(file = "cleaning.R")
 inputs <- list(
   admission_input = "Emergency Inpatients",
   sex_input = "Male",
-  age_input = "80-89 years",
+  age_input = "40-49 years",
   simd_input = 5,
   age_sex = "age",
   lockdown_input = "post"
@@ -50,7 +53,6 @@ bot_simd_clean %>%
 
 ```{r}
 bot_sex_clean %>% 
-  filter(age == inputs$age_input) %>% 
   group_by(age,
            sex) %>% 
   summarise(total_episodes = sum(episodes)) %>% 
@@ -61,9 +63,16 @@ bot_sex_clean %>%
   geom_col(position = "dodge") +
   theme_minimal()+
   labs(
-    x = "\nAge Range",
+    x = "\nAge Ranges",
     y = "Total Episodes\n"
-  ) 
+  ) +
+  theme(
+    legend.position = "none",
+    axis.text.x = element_text(angle = 315,
+                               vjust = 0.2,
+                               hjust = 0.5)
+  )
+
 
 ```
 
@@ -85,16 +94,16 @@ bot_sex_clean %>%
 
 
 ```{r}
-bot_simd_clean %>% 
+simd_stack <- ggplotly(bot_simd_clean %>% 
   drop_na(simd) %>% 
   filter(admission_type %in% c("Elective Inpatients",
                                "Emergency Inpatients"),
          lockdown == inputs$lockdown_input) %>% 
   group_by(simd, admission_type) %>% 
-  summarise(mean_episodes = sum(episodes)) %>% 
+  summarise(total_episodes = sum(episodes)) %>% 
   ggplot()+
   aes(x = simd,
-      y = mean_episodes,
+      y = total_episodes,
       fill = admission_type) +
   geom_col(position = "stack")+
   theme_minimal(
@@ -103,7 +112,7 @@ bot_simd_clean %>%
     x = "\nSIMD Ranking",
     y = "Total Episodes\n",
     fill = "Admission Type"
-  )
+  ))
 ```
 
 ```{r}
@@ -128,7 +137,6 @@ bot_sex_clean %>%
 
 ```{r}
 bot_simd_clean %>% 
-  filter(quarter)
   drop_na(simd) %>% 
   filter(admission_type %in% c("Elective Inpatients",
                                "Emergency Inpatients")) %>% 
@@ -142,4 +150,12 @@ bot_simd_clean %>%
 ```
 
 
+```{r}
+bot_simd_clean %>% 
+  drop_na(simd) %>% 
+  filter(admission_type %in% c("Elective Inpatients",
+                               "Emergency Inpatients")) %>% 
+  group_by(simd, admission_type) %>% 
+  summarise(mean_episodes = sum(episodes))
+```
 
