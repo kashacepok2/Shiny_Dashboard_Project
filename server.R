@@ -1,4 +1,7 @@
 server <- function(input, output, session) {
+  
+  
+  
   output$simd_plot <- renderPlotly({
     if (input$bar_input == "simd_stack") 
       {simd_stack}
@@ -26,7 +29,7 @@ server <- function(input, output, session) {
                theme_minimal()+
                labs(
                  x = "\nAge Ranges",
-                 y = "Mean Episodes per Quarter\n",
+                 y = "Mean Episodes per Location by Quarter\n",
                  fill = "Sex",
                  title = "Episodes Across Age and Gender"
                ) +
@@ -56,7 +59,7 @@ server <- function(input, output, session) {
                  theme_minimal() +
                  labs(
                    x = "\nAge Ranges",
-                   y = "Mean Episodes per Quarter\n",
+                   y = "Mean Episodes per Location by Quarter\n",
                    fill = "Sex",
                    title = "Episodes Across Age and Gender"
                  ) +
@@ -84,7 +87,7 @@ server <- function(input, output, session) {
                theme_minimal()+
                labs(
                  x = "\nAge Ranges",
-                 y = "Mean Episodes per Quarter\n",
+                 y = "Mean Episodes per Location by Quarter\n",
                  fill = "Sex",
                  title = "Episodes Across Age and Gender"
                ) +
@@ -116,7 +119,7 @@ server <- function(input, output, session) {
                  labs(
                    x = "\n SIMD Quintile",
                    y = "Total Infections\n\n",
-                   title = "Distirbution of Infections across SIMD Quintile\n"
+                   title = "Distribution of Infections across SIMD Quintile\n"
                  ) +
                  scale_y_continuous(
                    n.breaks = 10
@@ -138,7 +141,7 @@ server <- function(input, output, session) {
                  labs(
                    x = "\nSIMD Quintile\n",
                    y = "Total Reinfections\n\n",
-                   title = "Distirbution of Reinfections across SIMD Quintile\n"
+                   title = "Distribution of Reinfections across SIMD Quintile\n"
                  ) +
                  scale_y_continuous(
                    n.breaks = 10

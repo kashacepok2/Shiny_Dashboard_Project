@@ -195,8 +195,7 @@ ggplotly(covid_simd %>%
 ```{r}
 bot_sex_clean %>% 
   filter(age == "0-9 years") %>% 
-  group_by(sex) %>% 
-  summarise(mean(episodes))
+  group_by(sex) 
 ```
 
 

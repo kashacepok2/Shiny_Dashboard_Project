@@ -2,10 +2,11 @@
 
 
 ui <- fluidPage(
+  theme = bs_theme(bootswatch = "spacelab"),
   titlePanel("Covid App"),
   tabsetPanel(
     tabPanel(
-      "Demographics",
+      h4("Demographics"),
       fluidRow(
         column(
           2,
@@ -15,7 +16,7 @@ ui <- fluidPage(
             choices = c(
               "Before first UK lockdown" = "pre",
               "After first UK lockdown" = "post",
-              "Both" = "both"
+              "All available dates" = "both"
             )
           )
         ),
