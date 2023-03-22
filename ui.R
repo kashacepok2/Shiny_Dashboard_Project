@@ -29,7 +29,6 @@ ui <- fluidPage(
             )),
         column(
           6,
-          offset = 1,
           plotlyOutput(
             "age_range_plot"
           )
@@ -44,7 +43,6 @@ ui <- fluidPage(
       fluidRow(
         column(
           4,
-          offset = 1,
           selectInput(
             inputId =  "bar_input", 
             label = h3("Select bar style for SIMD plot:"), 
@@ -68,7 +66,6 @@ ui <- fluidPage(
       fluidRow(
         column(
           2,
-          offset = 1,
           radioButtons(
             inputId = "covid_simd_input",
             label = h3("Covid Infections by SIMD Quintile"),
@@ -81,7 +78,7 @@ ui <- fluidPage(
         ),
         column(
           6, 
-          offset = 2,
+          offset = 3,
           plotlyOutput(
           "simd_covid_plot"
           )

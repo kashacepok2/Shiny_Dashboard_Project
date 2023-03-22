@@ -54,7 +54,7 @@ simd_stack <- ggplotly(
     geom_col(position = "stack")+
     theme_minimal(
     ) +
-    scale_fill_manual(values = c("red", "red4")) +
+    scale_fill_manual(values = c("cyan", "green4")) +
     labs(
       x = "\nSIMD Quintile",
       y = "Total Episodes\n",
@@ -82,7 +82,7 @@ simd_flip <- ggplotly(
     geom_col(position = "stack")+
     theme_minimal(
     ) +
-    scale_fill_manual(values = c("red", "red4")) +
+    scale_fill_manual(values = c("cyan", "green4")) +
     labs(
       x = "\nSIMD Quintile",
       y = "Total Episodes\n",
@@ -115,7 +115,7 @@ simd_dodge <- ggplotly(
     geom_col(position = "dodge")+
     theme_minimal(
     ) +
-    scale_fill_manual(values = c("red", "red4")) +
+    scale_fill_manual(values = c("cyan", "green4")) +
     labs(
       x = "\nSIMD Quintile",
       y = "Total Episodes\n",

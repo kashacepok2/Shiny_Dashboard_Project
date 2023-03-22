@@ -20,14 +20,14 @@ server <- function(input, output, session) {
                  filter(lockdown == "pre") %>% 
                  group_by(age,sex) %>% 
                  summarise(mean_episodes = mean(episodes)) %>% 
-                 ggplot()+
+                 ggplot() +
                  aes(x = age,
                      y = mean_episodes,
                      fill = sex,
                      text = mean_episodes) +
                  geom_col(position = "dodge") +
                  theme_minimal()+
-                 scale_fill_manual(values = c("red", "red4")) +
+                 scale_fill_manual(values = c("cyan", "green4")) +
                  labs(
                    x = "\nAge Ranges",
                    y = "Mean Episodes per Location by Quarter\n",
@@ -58,7 +58,7 @@ server <- function(input, output, session) {
                      text = mean_episodes) +
                  geom_col(position = "dodge") +
                  theme_minimal() +
-                 scale_fill_manual(values = c("red", "red4")) +
+                 scale_fill_manual(values = c("cyan", "green4")) +
                  labs(
                    x = "\nAge Ranges",
                    y = "Mean Episodes per Location by Quarter\n",
@@ -87,7 +87,7 @@ server <- function(input, output, session) {
                      text = mean_episodes) +
                  geom_col(position = "dodge") +
                  theme_minimal()+
-                 scale_fill_manual(values = c("red", "red4")) +
+                 scale_fill_manual(values = c("cyan", "green4")) +
                  labs(
                    x = "\nAge Ranges",
                    y = "Mean Episodes per Location by Quarter\n",
@@ -117,7 +117,7 @@ server <- function(input, output, session) {
                    y = first_infections,
                    text = first_infections
                  ) +
-                 geom_col(fill = "red4")+
+                 geom_col(fill = "green4")+
                  theme_minimal() +
                  labs(
                    x = "\n SIMD Quintile",
@@ -139,7 +139,7 @@ server <- function(input, output, session) {
                    y = reinfections,
                    text = reinfections
                  ) +
-                 geom_col(fill = "red") +
+                 geom_col(fill = "cyan") +
                  theme_minimal() +
                  labs(
                    x = "\nSIMD Quintile\n",
@@ -155,3 +155,6 @@ server <- function(input, output, session) {
   }
   )
 }
+
+
+
