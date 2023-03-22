@@ -223,12 +223,12 @@ server <- function(input, output, session) {
       labs(x = "", y = "", colour = "")
   })
   
-  output$year_plot <- renderPlot({
+  output$year_plot <- renderPlot({ expr ={
     ggplot(summaries_2(), aes(x = year, y = count_2)) +
       geom_line(group =1) +
       theme_minimal() +
       labs(x = "", y = "")
-  })
+  }})
   
   summary_table_1 <- reactive({
     treatment_activity_clean %>%

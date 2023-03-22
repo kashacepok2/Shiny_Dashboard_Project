@@ -2,7 +2,8 @@ ui <- fluidPage(
   titlePanel(title = "NHS Data"),
   theme = shinytheme("flatly"),
   tabsetPanel(
-    tabPanel("A&E Activity", 
+    tabPanel(
+      h4("A&E Activity"), 
              
              fluidRow(
                
@@ -55,7 +56,8 @@ ui <- fluidPage(
              )
     ), 
     
-    tabPanel("Hospital Activity", 
+    tabPanel(
+      h4("Hospital Activity"), 
              
              fluidRow(
                
@@ -101,7 +103,8 @@ ui <- fluidPage(
              )
     ), 
     
-    tabPanel("Bed Occupancy", 
+    tabPanel(
+      h4("Bed Occupancy"), 
              
              fluidRow(
                HTML("<br><br><br>"),
