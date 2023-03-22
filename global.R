@@ -4,14 +4,7 @@ library(janitor)
 library(here)
 library(plotly)
 library(bslib)
+library(shinythemes)
 
 source(here("cleaning.R"))
-
-
-
-
-
-
-
-
-
+source(here("cleaning_script.R"))

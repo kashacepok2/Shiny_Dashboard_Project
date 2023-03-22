@@ -1,0 +1,651 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+# libraries 
+
+library(tidyverse)
+library(ggplot2)
+library(lubridate)
+library(tsibble)
+library(stringr)
+library(infer)
+library(janitor)
+
+```
+
+
+```{r}
+# read in data-sets 
+
+residence_activity <- read_csv("raw_data/by_board_of_residence/inpatient_and_daycase_by_nhs_board_of_residence.csv") %>% clean_names()
+
+treatment_activity <- read_csv("raw_data/by_board_of_treatment/inpatient_and_daycase_by_nhs_board_of_treatment.csv") %>% clean_names()
+
+residence_age_sex <- read_csv("raw_data/by_board_of_residence/inpatient_and_daycase_by_nhs_board_of_residence_age_and_sex.csv") %>% clean_names()
+
+
+residence_simd <- read_csv("raw_data/by_board_of_residence/inpatient_and_daycase_by_nhs_board_of_residence_and_simd.csv") %>% clean_names()
+
+
+residence_speciality <- read_csv("raw_data/by_board_of_residence/inpatient_and_daycase_by_nhs_board_of_residence_and_specialty.csv") %>% clean_names()
+
+
+beds <- read_csv("raw_data/by_board_of_treatment/beds_by_nhs_board_of_treatment_and_specialty.csv") %>% clean_names()
+
+treatment_age_sex <- read_csv("raw_data/by_board_of_treatment/inpatient_and_daycase_by_nhs_board_of_treatment_age_and_sex.csv") %>% clean_names()
+
+treatment_simd <- read_csv("raw_data/by_board_of_treatment/inpatient_and_daycase_by_nhs_board_of_treatment_and_simd.csv") %>% clean_names()
+
+
+treatment_speciality <- read_csv("raw_data/by_board_of_treatment/inpatient_and_daycase_by_nhs_board_of_treatment_and_specialty.csv") %>% clean_names()
+
+
+waiting_times <- read_csv("raw_data/by_board_of_treatment/monthly_ae_waitingtimes_202301.csv") %>% clean_names()
+
+
+
+
+```
+
+Questions 
+
+The whole system: from what’s coming through the front door in A&E and then how it filters through; how many emergency admissions are there, how many electives, how does this impact the lengths of stay people have in hospital?
+
+What does this mean for the number of people in intensive care and the number of beds?
+
+Do people have longer lengths of stay from elective or emergency admissions?
+
+```{r}
+
+# for the app: 
+
+# show A&E Attendances, Hospital Activity or Bed Occupancy 
+
+# 2. for A&E attendances: 
+
+        # 1. select: yearly or seasonal comparison 
+        # 2. select: number of attendances or number meeting target. 
+    
+# 3. For Hospital Activity: 
+   # select: whole period, years before pandemic, years during pandemic, seasons(years 2020-21), seasonal variation before pandemic.
+   # select: type of patient: elective or emergency. 
+   # select: number of episodes or length of stay: 
+   # select: Intensive Care or Other departments
+  
+
+# For Bed Occupancy 
+
+# select: whole period, years before pandemic, years during pandemic, or seasons (2020-21), seasons(before pandemic). 
+# select: Intensive Care or Other departments
+# select: total occupancy or percentage of all bed availability. 
+
+
+
+
+```
+
+
+
+```{r}
+
+# clean monthly A&E Activity and Waiting times 
+
+AE_activity_clean <-  
+  waiting_times %>% 
+  mutate(year = str_extract(month, "\\d{4}")) %>% 
+  mutate(month = str_extract(month, "\\d{2}$")) %>% 
+  mutate(month = case_when(month == "01" ~ "Jan", month == "02" ~ "Feb", month == "03" ~ "Mar", month == "04" ~ "Apr", month == "05" ~ "May", month == "06" ~ "June", month == "07" ~ "July", month == "08" ~ "Aug", month == "09" ~ "Sep", month == "10" ~ "Oct", month == "11" ~ "Nov", month == "12" ~ "Dec")) %>% 
+  mutate(month = as.factor(month)) %>% 
+  mutate(month = factor(month, levels = c("Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"))) %>% 
+  mutate(pandemic_years = case_when(year == "2020" ~ "Pandemic", year == "2021" ~ "Pandemic", year == "2017" ~ "Pre-pandemic", year == "2018" ~ "Pre-pandemic"))
+
+```
+
+
+
+```{r}
+
+# clean treatment activity 
+
+treatment_activity_clean <-
+treatment_activity %>% 
+  mutate(year = str_extract(quarter,"\\d{4}")) %>%
+  mutate(quarter_extr = substr(quarter,5,6)) %>% 
+  mutate(quarter_extr = case_when(quarter_extr == "Q1" ~ "Jan-Mar", quarter_extr == "Q2" ~ "Apr-June", quarter_extr == "Q3" ~ "July-Sep", quarter_extr == "Q4" ~ "Oct-Dec" )) %>% 
+  mutate(quarter_extr = as.factor(quarter_extr)) %>% 
+  mutate(quarter_extr = factor(quarter_extr, levels = c("Jan-Mar","Apr-June","July-Sep","Oct-Dec")))  %>% 
+  mutate(pandemic_years = case_when(year == "2020" ~ "Pandemic", year == "2021" ~ "Pandemic", year == "2017" ~ "Pre-pandemic", year == "2018" ~ "Pre-pandemic"))
+  
+  
+
+```
+
+```{r}
+
+# clean treatment specialty 
+
+treatment_specialty_clean <-
+treatment_speciality %>% 
+  mutate(year = str_extract(quarter,"\\d{4}")) %>%
+  mutate(quarter_extr = substr(quarter,5,6)) %>% 
+  mutate(quarter_extr = case_when(quarter_extr == "Q1" ~ "Jan-Mar", quarter_extr == "Q2" ~ "Apr-June", quarter_extr == "Q3" ~ "July-Sep", quarter_extr == "Q4" ~ "Oct-Dec" )) %>% 
+  mutate(quarter_extr = as.factor(quarter_extr)) %>% 
+  mutate(quarter_extr = factor(quarter_extr, levels = c("Jan-Mar","Apr-June","July-Sep","Oct-Dec"))) %>% 
+   mutate(pandemic_years = case_when(year == "2020" ~ "Pandemic", year == "2021" ~ "Pandemic", year == "2017" ~ "Pre-pandemic", year == "2018" ~ "Pre-pandemic"))
+
+
+
+```
+
+```{r}
+
+# clean beds 
+
+beds_clean <- 
+  beds %>% 
+  mutate(year = str_extract(quarter,"\\d{4}")) %>%
+  mutate(quarter_extr = substr(quarter,5,6)) %>% 
+  mutate(quarter_extr = case_when(quarter_extr == "Q1" ~ "Jan-Mar", quarter_extr == "Q2" ~ "Apr-June", quarter_extr == "Q3" ~ "July-Sep", quarter_extr == "Q4" ~ "Oct-Dec" )) %>% 
+  mutate(quarter_extr = as.factor(quarter_extr)) %>% 
+  mutate(quarter_extr = factor(quarter_extr, levels = c("Jan-Mar","Apr-June","July-Sep","Oct-Dec"))) %>% 
+   mutate(pandemic_years = case_when(year == "2020" ~ "Pandemic", year == "2021" ~ "Pandemic", year == "2017" ~ "Pre-pandemic", year == "2018" ~ "Pre-pandemic"))
+  
+
+```
+
+The A&E part 
+
+```{r}
+
+# PATIENTS COMING IN TO THE A&E 
+
+
+# number of people coming in to A&E yearly since 2008
+
+AE_activity_clean %>% 
+  filter(!year %in% c("2023","2007")) %>% 
+  group_by(year) %>% 
+  summarise(yearly_count = sum(number_of_attendances_aggregate)) %>% 
+  ggplot(aes(x = year, y = yearly_count))+
+  geom_line(group =1)+
+  theme_minimal()+
+  labs(x = "", y = "")
+
+
+```
+
+```{r}
+
+# number of people coming in to the A&E 2017 and 2018 compared to 2020 and 2021 . The number of people coming in to the A&E was lower before the pandemic. 
+
+
+AE_activity_clean %>% 
+  filter(pandemic_years %in% c("Pandemic", "Pre-pandemic")) %>% 
+  ggplot(aes(x = pandemic_years, y = number_of_attendances_aggregate)) +
+  geom_col()
+
+
+
+
+```
+
+
+```{r}
+
+# seasonal variation before and during the pandemic 
+
+AE_activity_clean %>% 
+  filter(pandemic_years %in% c("Pandemic", "Pre-pandemic")) %>% 
+  group_by(month, pandemic_years) %>% 
+  summarise(sum_attendances = sum(number_of_attendances_aggregate)) %>% 
+  ggplot(aes(x = month, y = sum_attendances, colour = pandemic_years, group = pandemic_years)) +
+  geom_line()+
+  theme_minimal()+
+  labs(x = "", y = "", colour = "")
+
+
+
+```
+```{r}
+# A&E targets met over years - pandemic has had a great cost it still hasn't recovered. 
+
+AE_activity_clean %>% 
+  filter(!year %in% c("2023","2007")) %>% 
+  group_by(year) %>% 
+  summarise(yearly_target_met = sum(number_meeting_target_aggregate)) %>% 
+  ggplot(aes(x = year, y = yearly_target_met))+
+  geom_line(group =1)+
+  theme_minimal()+
+  labs(x = "", y = "")
+
+```
+```{r}
+# Targets met monthly comparison. Less patients meet target in the winters both in pandemic years and in pre-pandemic years. 
+
+AE_activity_clean %>% 
+  filter(pandemic_years %in% c("Pandemic", "Pre-pandemic")) %>% 
+  group_by(month, pandemic_years) %>% 
+  summarise(sum_target = sum(number_meeting_target_aggregate)) %>% 
+  ggplot(aes(x = month, y = sum_target, colour = pandemic_years, group = pandemic_years)) +
+  geom_point()+
+  geom_line()+
+  theme_minimal()+
+  labs(x = "", y = "", colour = "")
+
+
+
+
+```
+
+
+```{r}
+
+
+# people coming in to A&E monthly in pandemic years 
+
+
+AE_activity_clean %>% 
+  filter(year %in% c(2020,2021,2022)) %>% 
+  group_by(month) %>% 
+  summarise(monthly_count = sum(number_of_attendances_aggregate)) %>% 
+  ggplot(aes(x = month, y = monthly_count))+
+  geom_line(group =1)
+
+
+#  A & E targets over years 
+
+AE_activity_clean %>% 
+  filter(!year == "2023") %>% 
+  group_by(year) %>% 
+  summarise(yearly_target_met = sum(number_meeting_target_aggregate)) %>% 
+  ggplot(aes(x = year, y = yearly_target_met))+
+  geom_line(group =1)
+
+
+# monthly meeting target A & E during pandemic years 
+
+AE_activity_clean %>% 
+  filter(year %in% c(2020,2021,2022)) %>% 
+  group_by(month) %>% 
+  summarise(monthly_target_met = sum(number_meeting_target_aggregate)) %>% 
+  ggplot(aes(x = month, y = monthly_target_met))+
+  geom_line(group =1)
+
+
+# Conclusion: for the A&E . less people came in over the winter. But less were also meeting target. Lack of staff availability or staff in the A&E occupied elsewhere? 
+
+# INPATIENTS 
+
+treatment_activity %>%  
+  distinct(admission_type)
+
+
+# Emergency number of patients over years 
+
+treatment_activity_clean %>%
+  filter(admission_type == "Emergency Inpatients", !year == 2017) %>% 
+  group_by(year) %>% 
+  summarise(admissions_year = sum(episodes)) %>% 
+  ggplot(aes(x = year, y = admissions_year))+
+  geom_point()+
+  geom_line(group = 1)+
+  theme(axis.text.x = element_text(angle = 45))
+
+  
+
+# Electives number of patients over years 
+
+treatment_activity %>%
+  filter(admission_type == "Elective Inpatients") %>% 
+  group_by(quarter) %>% 
+  summarise(admissions_quarter = sum(episodes)) %>% 
+  ggplot(aes(x = quarter, y = admissions_quarter))+
+  geom_point()+
+  geom_line(group = 1)+
+  theme(axis.text.x = element_text(angle = 45))
+
+# CREATE GRAPH THAT SHOWS BOTH ELECTIVE AND EMERGENCY INPATIENTS COMING IN OVER TIME 
+
+# number of episodes over hte the years 
+
+treatment_activity_clean %>% 
+  group_by(admission_type, year) %>% 
+  summarise(n_episodes = mean(episodes)) %>% 
+  filter(admission_type %in% c("Emergency Inpatients", "Elective Inpatients")) %>% 
+  ggplot(aes(x = year, y = n_episodes, colour = admission_type, group = admission_type))+
+  geom_point()+
+  geom_line()+
+  theme(axis.text.x = element_text(angle = 45))
+
+# number of episodes over quarters
+
+treatment_activity_clean %>% 
+  group_by(admission_type, quarter_extr) %>% 
+  summarise(n_episodes = mean(episodes)) %>% 
+  filter(admission_type %in% c("Emergency Inpatients", "Elective Inpatients")) %>% 
+  ggplot(aes(x = quarter_extr, y = n_episodes, colour = admission_type, group = admission_type))+
+  geom_point()+
+  geom_line()+
+  theme(axis.text.x = element_text(angle = 45))
+
+
+treatment_activity_clean %>% 
+  distinct(year)
+
+# length of stay over years 
+
+treatment_activity_clean %>% 
+  group_by(admission_type, year) %>% 
+  summarise(mean_length = mean(length_of_stay)) %>% 
+  filter(admission_type %in% c("Emergency Inpatients", "Elective Inpatients")) %>% 
+  ggplot(aes(x = year, y = mean_length, colour = admission_type, group = admission_type))+
+  geom_point()+
+  geom_line()+
+  theme(axis.text.x = element_text(angle = 45))
+
+
+# length of stay over quarter 
+
+treatment_activity_clean %>% 
+  group_by(admission_type, quarter_extr) %>% 
+  summarise(mean_length = mean(length_of_stay)) %>% 
+  filter(admission_type %in% c("Emergency Inpatients", "Elective Inpatients")) %>% 
+  ggplot(aes(x = quarter_extr, y = mean_length, colour = admission_type, group = admission_type))+
+  geom_point()+
+  geom_line()+
+  theme(axis.text.x = element_text(angle = 45))
+
+
+# Do people have longer lengths of stay from elective or emergency admissions?
+
+# save filtered data 
+
+treatment_activity_filt <- treatment_activity %>% 
+  filter(admission_type %in% c("Emergency Inpatients", "Elective Inpatients")) %>% 
+  mutate(admission_type = as.factor(admission_type))
+
+# generate null distribution 
+
+null_dist <- treatment_activity_filt %>% 
+  specify(length_of_stay ~ admission_type) %>% 
+  hypothesise(null = "independence") %>% 
+  generate(reps = 5000, type = "permute") %>% 
+  calculate(stat = "diff in means", order= c("Emergency Inpatients", "Elective Inpatients"))
+
+# calculate statistic 
+
+observed_stat <- treatment_activity_filt %>% 
+  specify(length_of_stay ~ admission_type) %>% 
+  calculate(stat = "diff in means", order = c("Emergency Inpatients", "Elective Inpatients")) %>% 
+  pull()
+
+# observed_stat_p
+
+# visualise 
+
+null_dist %>% 
+  visualise() +
+  shade_p_value(obs_stat = observed_stat, direction = "two-sided")
+
+# p-value 
+
+p_value <- null_dist %>% 
+  get_p_value(obs_stat = observed_stat, direction = "two-sided")
+
+# p_value_p
+
+
+# length of stay by average 
+
+treatment_activity_filt %>% 
+  group_by(admission_type, quarter) %>% 
+  summarise(mean_mean_stay = mean(average_length_of_stay)) %>% 
+  ggplot(aes(x = quarter, y = average_length_of_stay, colour = admission_type))+
+  geom_point()+
+  geom_line()+
+  theme(axis.text.x = element_text(angle = 45))
+
+
+```
+
+
+```{r}
+
+# What does this mean for the number of people in intensive care and the number of beds?
+
+# number of people in intensive care -  number of people in intensive care drops 2019 Q4 to 2020 Q2
+
+treatment_speciality %>% 
+  filter(specialty_name == "Intensive Care Medicine") %>% 
+  group_by(quarter) %>% 
+  summarise(intensive_quarter = sum(episodes)) %>% 
+  ggplot(aes(x = quarter, y = intensive_quarter))+
+  geom_point()+
+  geom_line(group = 1)+
+  theme(axis.text.x = element_text(angle = 45))
+
+
+# check for over years - number of people in intensive Care Medicine increases 
+
+
+treatment_specialty_clean %>% 
+  filter(specialty_name == "Intensive Care Medicine") %>% 
+  group_by(year) %>% 
+  summarise(intensive_year = sum(episodes)) %>% 
+  ggplot(aes(x = year, y = intensive_year))+
+  geom_point()+
+  geom_line(group = 1)+
+  theme(axis.text.x = element_text(angle = 45))
+
+
+# check over quartas - more poeple in intensive care medicine in the winters of 2020 and 2021
+
+treatment_specialty_clean %>% 
+filter(specialty_name == "Intensive Care Medicine", year %in%c("2020", "2021")) %>% 
+  group_by(quarter_extr) %>% 
+  summarise(intensive_quarter_extr = sum(episodes)) %>% 
+  ggplot(aes(x = quarter_extr, y = intensive_quarter_extr))+
+  geom_point()+
+  geom_line(group = 1)+
+  theme(axis.text.x = element_text(angle = 45))
+
+
+# number of beds percentage in intensive care 
+
+ beds %>% 
+  filter(specialty_name == "Intensive Care Medicine") %>% 
+  group_by(quarter) %>% 
+  summarise(beds_occ = mean(percentage_occupancy)) %>% 
+  ggplot(aes(x = quarter, y = beds_occ))+
+  geom_point()+
+  geom_line(group = 1)+
+  theme(axis.text.x = element_text(angle = 45))
+ 
+ # beds over years 
+ 
+ beds_clean %>% 
+  filter(specialty_name == "Intensive Care Medicine") %>% 
+  group_by(year) %>% 
+  summarise(beds_occ = mean(percentage_occupancy)) %>% 
+  ggplot(aes(x = year, y = beds_occ))+
+  geom_point()+
+  geom_line(group = 1)+
+  theme(axis.text.x = element_text(angle = 45))
+   
+ 
+ # beds in intensive care over quortas in 2020 and 2021
+ 
+  beds_clean %>% 
+  filter(specialty_name == "Intensive Care Medicine", year %in% c(2020,2021)) %>% 
+  group_by(quarter_extr) %>% 
+  summarise(beds_occ = mean(percentage_occupancy)) %>% 
+  ggplot(aes(x = quarter_extr, y = beds_occ))+
+  geom_point()+
+  geom_line(group = 1)+
+  theme(axis.text.x = element_text(angle = 45))
+ 
+
+# number bed occupancy average in intensive care - increases 2019 Q4 to 2020 Q2. "An occupied bed is an available staffed bed, which is either being used to accommodate an inpatient or reserved for a patient on pass". 
+
+
+  beds %>% 
+  filter(specialty_name == "Intensive Care Medicine") %>% 
+  group_by(quarter) %>% 
+  summarise(beds_occ = mean(average_occupied_beds)) %>% 
+  ggplot(aes(x = quarter, y = beds_occ))+
+  geom_point()+
+  geom_line(group = 1)+
+  theme(axis.text.x = element_text(angle = 45))
+  
+  # general bed occupancy pattern  by average
+  
+  beds %>% 
+  group_by(quarter) %>% 
+  summarise(beds_occ = mean(average_occupied_beds)) %>% 
+  ggplot(aes(x = quarter, y = beds_occ))+
+  geom_point()+
+  geom_line(group = 1)+
+  theme(axis.text.x = element_text(angle = 45))
+  
+  
+  # general bed occupancy pattern by percentage 
+  
+  beds %>% 
+  group_by(quarter) %>% 
+  summarise(beds_occ = mean(percentage_occupancy)) %>% 
+  ggplot(aes(x = quarter, y = beds_occ))+
+  geom_point()+
+  geom_line(group = 1)+
+  theme(axis.text.x = element_text(angle = 45))
+  
+  beds_clean %>% 
+    distinct(year)
+  
+#   Surgery Grouping, Women and Newborn Grouping, Intensive Care Medicine	, Mental Health Grouping	, Rehabilitation Medicine	
+  
+  
+# beds seasons before pandemic . DO INTENSIVE CARE BEFORE AND AFTER THE PANDEMIC. 
+  
+  beds_clean %>% 
+  filter(specialty_name == "Intensive Care Medicine", year %in% c(2019)) %>% 
+  group_by(quarter_extr) %>% 
+  summarise(beds_occ = mean(percentage_occupancy)) %>% 
+  ggplot(aes(x = quarter_extr, y = beds_occ))+
+  geom_point()+
+  geom_line(group = 1)+
+  theme(axis.text.x = element_text(angle = 45))
+  
+  treatment_specialty_clean %>% 
+    filter(specialty_name == "Intensive Care Medicine") %>% 
+    distinct(quarter)
+  
+```
+```{r}
+
+# Are there any specialties that have more stable activity patterns over time ?
+
+treatment_speciality %>%
+  group_by(specialty_name, quarter) %>%
+  summarise(mean_length_episode = mean(length_of_episode)) %>%
+  drop_na() %>%
+  ggplot() +
+  aes(
+    x = quarter,
+    y = mean_length_episode,
+    colour = specialty_name, 
+    group = specialty_name
+  ) +
+ geom_point()+
+  geom_smooth(method = "lm", se = FALSE)+
+  facet_wrap(~specialty_name)
+
+
+
+```
+
+
+
+
+```{r}
+
+# emergency number of patients by sex 
+treatment_age_sex %>% 
+  filter(admission_type == "Emergency Inpatients") %>% 
+  group_by(quarter, sex) %>% 
+  summarise(admissions_quarter = sum(episodes)) %>% 
+  ggplot(aes(x = quarter, y = admissions_quarter, colour = sex, group = sex))+
+  geom_point()+
+  geom_line()+
+  theme(axis.text.x = element_text(angle = 45))
+
+# length of stay by sex 
+
+treatment_age_sex %>% 
+  group_by(sex, admission_type, quarter) %>% 
+  summarise(mean_length = mean(length_of_stay)) %>% 
+  filter(admission_type %in% c("Emergency Inpatients", "Elective Inpatients")) %>% 
+  ggplot(aes(x = quarter, y = mean_length, colour = sex, group = admission_type))+
+  geom_point()+
+  theme(axis.text.x = element_text(angle = 45))
+
+
+```
+
+```{r}
+
+# beds occupancy for other specialtites 
+
+beds %>% 
+  distinct(specialty_name)
+
+ beds %>% 
+  group_by(quarter, specialty_name) %>% 
+  summarise(beds_occ = sum(average_occupied_beds)) %>% 
+  filter(specialty_name %in% c("General Surgery", "Women and Newborn Grouping", "General Psychiatry (Mental Illness", "Mental Health Grouping", "Palliative Medicine", "Neurosurgery", "Cardiology","Respiratory Medicine", "Intensive Care Medicine")) %>% 
+  ggplot(aes(x = quarter, y = beds_occ, colour = specialty_name, group = specialty_name))+
+  geom_point()+
+  geom_line()+
+  theme(axis.text.x = element_text(angle = 45))
+
+ 
+ ## look at mental health example 
+ 
+ # bed occupancy average 
+ 
+  beds_clean %>% 
+  group_by(year, specialty_name) %>% 
+  summarise(beds_occ = sum(average_occupied_beds)) %>% 
+  filter(specialty_name == "Mental Health Grouping") %>% 
+  ggplot(aes(x = year, y = beds_occ))+
+  geom_point()+
+  geom_line(group =1)+
+  theme(axis.text.x = element_text(angle = 45))
+  
+  
+  # bed occupancy precentages 
+  
+  beds_clean %>% 
+  group_by(year, specialty_name) %>% 
+  summarise(beds_occ = mean(percentage_occupancy)) %>% 
+  filter(specialty_name == "Mental Health Grouping") %>% 
+  ggplot(aes(x = year, y = beds_occ))+
+  geom_point()+
+  geom_line(group =1)+
+  theme(axis.text.x = element_text(angle = 45))
+ 
+
+```
+
+```{r}
+
+```
+
+
+
+
+
+
+
