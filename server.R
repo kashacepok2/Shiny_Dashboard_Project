@@ -27,7 +27,6 @@ server <- function(input, output, session) {
                      text = mean_episodes) +
                  geom_col(position = "dodge") +
                  theme_minimal()+
-                 scale_fill_manual(values = c("cyan", "green4")) +
                  labs(
                    x = "\nAge Ranges",
                    y = "Mean Episodes per Location by Quarter\n",
@@ -58,7 +57,6 @@ server <- function(input, output, session) {
                      text = mean_episodes) +
                  geom_col(position = "dodge") +
                  theme_minimal() +
-                 scale_fill_manual(values = c("cyan", "green4")) +
                  labs(
                    x = "\nAge Ranges",
                    y = "Mean Episodes per Location by Quarter\n",
@@ -87,7 +85,6 @@ server <- function(input, output, session) {
                      text = mean_episodes) +
                  geom_col(position = "dodge") +
                  theme_minimal()+
-                 scale_fill_manual(values = c("cyan", "green4")) +
                  labs(
                    x = "\nAge Ranges",
                    y = "Mean Episodes per Location by Quarter\n",
@@ -117,7 +114,7 @@ server <- function(input, output, session) {
                    y = first_infections,
                    text = first_infections
                  ) +
-                 geom_col(fill = "green4")+
+                 geom_col(fill = "#F8766D")+
                  theme_minimal() +
                  labs(
                    x = "\n SIMD Quintile",
@@ -139,7 +136,7 @@ server <- function(input, output, session) {
                    y = reinfections,
                    text = reinfections
                  ) +
-                 geom_col(fill = "cyan") +
+                 geom_col(fill = "#00bfc4") +
                  theme_minimal() +
                  labs(
                    x = "\nSIMD Quintile\n",
