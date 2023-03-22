@@ -2,7 +2,6 @@
 
 
 ui <- fluidPage(
-  theme = bs_theme(bootswatch = "spacelab"),
   titlePanel("Covid App"),
   tabsetPanel(
     tabPanel(
