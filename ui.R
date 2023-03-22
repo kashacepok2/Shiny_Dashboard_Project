@@ -1,7 +1,3 @@
-
-
-
-
 ui <- fluidPage(
   titlePanel(title = "NHS Data"),
   theme = shinytheme("flatly"),
@@ -36,6 +32,25 @@ ui <- fluidPage(
                  radioButtons("measure_2", "", choices = c( "Patients attending" = "number_of_attendances_aggregate", "Patients meeting care target" = "number_meeting_target_aggregate")),
                  plotOutput("a_e_plot"),
                  dataTableOutput("table_output")
+               )
+             ),
+             fluidRow(
+               sidebarPanel(
+                 dateInput(inputId = "date",
+                           label = ("Date"),
+                           min = "2018-01-01",
+                           max = "2022-07-01"
+                 )
+               )
+             ),
+             fluidRow(
+               mainPanel(
+                 plotOutput("graph_output_ae")
+               )
+             ),
+             fluidRow(
+               mainPanel(
+                 leafletOutput("map_output_ae")
                )
              )
     ), 
@@ -114,6 +129,25 @@ ui <- fluidPage(
                  radioButtons("m_2", "", choices = c("Percentage of available beds occupied" = "percentage_occupancy","Average number of beds occupied" = "average_occupied_beds")),
                  plotOutput("season_b"),
                  dataTableOutput("table_b2")
+               )
+             ),
+             fluidRow(
+               sidebarPanel(
+                 dateInput(inputId = "date",
+                           label = ("Date"),
+                           min = "2018-01-01",
+                           max = "2022-07-01"
+                 )
+               )
+             ),
+             fluidRow(
+               mainPanel(
+                 plotOutput("graph_output_bed")
+               )
+             ),
+             fluidRow(
+               mainPanel(
+                 leafletOutput("map_output_bed")
                )
              )
     ),
