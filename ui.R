@@ -118,7 +118,7 @@ ui <- fluidPage(
              )
     ),
     tabPanel(
-      ("Demographics"),
+      h4("Demographics"),
       fluidRow(
         column(
           2,
