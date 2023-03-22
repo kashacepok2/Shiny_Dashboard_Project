@@ -79,7 +79,7 @@ treatment_specialty_clean <-
 
 # clean beds
 
-beds_clean <- 
+beds_clean_ellen <- 
   beds %>% 
   mutate(year = str_extract(quarter,"\\d{4}")) %>%
   mutate(quarter_extr = substr(quarter,5,6)) %>% 

@@ -291,14 +291,14 @@ server <- function(input, output, session) {
   })
   
   summary_table_b1 <- reactive({
-    beds_clean %>%
+    beds_clean_ellen %>%
       filter(specialty_name %in% c("Surgery Grouping", "Women and Newborn Grouping", "Intensive Care Medicine", "Mental Health Grouping", "Rehabilitation Medicine")) %>% 
       group_by(year,specialty_name) %>% 
       summarise(m_year_b = mean(!!sym(input$m_1)))
   }) 
   
   summary_table_b2 <- reactive({
-    beds_clean %>%
+    beds_clean_ellen %>%
       filter(pandemic_years == input$period_1) %>% 
       filter(specialty_name %in% c("Surgery Grouping", "Women and Newborn Grouping", "Intensive Care Medicine", "Mental Health Grouping", "Rehabilitation Medicine"))%>% 
       group_by(quarter_extr, specialty_name) %>% 
