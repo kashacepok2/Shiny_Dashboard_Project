@@ -224,11 +224,34 @@ bot_sex_clean %>%
       y = total_eps) +
   geom_col() +
   geom_smooth(method = "loess",
-              se = TRUE)
+              se = TRUE,
+              colour = "red") +
+  theme_minimal()
 ```
 
 
 
+```{r}
+bot_sex_clean %>%
+  mutate(age = case_when(
+    age == "0-9 years" ~ "4.5",
+    age == "10-19 years" ~ "14.5",
+    age == "20-29 years" ~ "24.5",
+    age == "30-39 years" ~ "34.5",
+    age == "40-49 years" ~ "44.5",
+    age == "50-59 years" ~ "54.5",
+    age == "60-69 years" ~ "64.5",
+    age == "70-79 years" ~ "74.5",
+    age == "80-89 years" ~ "84.5",
+    age == "90 years and over" ~ "94.5"
+  )) %>% 
+  mutate(age = as.numeric(age)) %>%
+  group_by(age) %>% 
+  summarise(total_eps = sum(episodes)) %>% 
+  mutate(count = total_eps) %>% 
+  select(-total_eps) %>% 
+  summarise(skewness = skewness(count))
+```
 
 
 

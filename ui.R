@@ -2,7 +2,7 @@
 
 
 ui <- fluidPage(
-  titlePanel("Covid App"),
+  titlePanel(title = "NHS Data"),
   tabsetPanel(
     tabPanel(
       h4("Demographics"),
@@ -84,7 +84,7 @@ ui <- fluidPage(
           offset = 2,
           plotlyOutput(
           "simd_covid_plot"
-        )
+          )
         )
       )
     )
