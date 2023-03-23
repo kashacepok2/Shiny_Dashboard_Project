@@ -9,7 +9,7 @@ bot_simd <- clean_names(read_csv(here("raw_data/by_board_of_treatment/inpatient_
 
 covid_simd <- clean_names(read_csv(here("raw_data/total_cases_simd_20230315.csv")))
 
-mh_waiting_times <- clean_names(read_csv(here("raw_data/camhs-adjusted-patients-seen.csv")))
+mh_waiting_times_euan <- clean_names(read_csv(here("raw_data/camhs-adjusted-patients-seen.csv")))
 
 clean_location<- function(table) {
   unique(table %>% 
@@ -129,7 +129,7 @@ simd_dodge <- ggplotly(
 )
 
 
-mh_waiting_times_clean <- mh_waiting_times%>% 
+mh_waiting_times_clean_euan <- mh_waiting_times_euan %>% 
   mutate(percentage_trgt_met = 100*(number_of_patients_seen0to18weeks/total_patients_seen)) %>% 
   mutate(pandemic = case_when(
     month <= 202003 ~ "pre",
@@ -137,7 +137,7 @@ mh_waiting_times_clean <- mh_waiting_times%>%
   )) %>% 
   filter(total_patients_seen > 0)
 
-pre_mh <- mh_waiting_times_clean %>% 
+pre_mh <- mh_waiting_times_clean_euan %>% 
   filter(pandemic == "pre") %>% 
   ggplot()+
   aes(x = percentage_trgt_met)+
@@ -150,7 +150,7 @@ Mental Health Referral Times",
 subtitle = "\nBefore the first UK COVID-19 lockdown"
   )
 
-post_mh <- mh_waiting_times_clean %>% 
+post_mh <- mh_waiting_times_clean_euan %>% 
   filter(pandemic == "post") %>% 
   ggplot()+
   aes(x = percentage_trgt_met)+

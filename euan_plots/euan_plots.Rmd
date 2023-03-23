@@ -279,7 +279,9 @@ ggplot()+
        subtitle = "After the first UK COVID-19 lockdown"
        )
 
-pre_mh/post_mh
+mh_plot_euan <- pre_mh/post_mh
+
+mh_plot_euan
 ```
 
 
