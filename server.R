@@ -2,28 +2,32 @@
 server <- function(input, output, session) {
   
   output$map_output_bed <- renderPlot(expr = {
+    beds_clean_filter <- beds_clean %>% 
+      filter(date == input$date)
     
     scotland_hb_xform %>%
       leaflet() %>% 
       addTiles() %>% 
       addPolygons(label = ~hb_name,
-                  fillColor = getcolour(beds_clean$percentage), 
-                  opacity = 0.8,
-                  color = "grey40")
+                  fillColor = getcolour(beds_clean_filter$percentage), 
+                  opacity = 0.6)
   }
   )
   output$map_output_ae <- renderLeaflet(expr = {
+    ae_times_clean_filter <- ae_times_clean %>% 
+      filter(date == input$date)
     
     scotland_hb_xform %>%
       leaflet() %>% 
       addTiles() %>% 
       addPolygons(label = ~hb_name,
-                  fillColor = getcolour(ae_times_clean$percentage), 
-                  opacity = 0.8)
+                  fillColor = getcolour(ae_times_clean_filter$percentage), 
+                  opacity = 0.6)
   }
   )
   output$graph_output_bed <- renderPlot(expr = {
     beds_clean %>% 
+      filter(date == input$date) %>% 
       group_by(hb_name, date) %>%
       summarise(Percentage = mean(percentage)) %>% 
       ggplot() +
@@ -35,6 +39,7 @@ server <- function(input, output, session) {
   )
   output$graph_output_ae <- renderPlot(expr = {
     ae_times_clean %>% 
+      filter(date == input$date) %>% 
       group_by(hb_name, date) %>%
       summarise(Percentage = mean(percentage)) %>% 
       ggplot() +
