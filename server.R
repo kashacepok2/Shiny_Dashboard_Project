@@ -152,7 +152,7 @@ server <- function(input, output, session) {
                  theme_minimal()+
                  labs(
                    x = "\nAge Ranges",
-                   y = "Mean Episodes per Location by Quarter\n",
+                   y = "Mean Quarterly Episodes per Location\n",
                    fill = "Sex",
                    title = "Episodes Across Age and Gender"
                  ) +
