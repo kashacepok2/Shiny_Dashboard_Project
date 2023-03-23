@@ -47,8 +47,8 @@ AE_activity_clean <-
   mutate(month = factor(month, levels = c("Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"))) %>% 
   mutate(pandemic_years = case_when(year_e == "2020" ~ "Pandemic", year_e == "2021" ~ "Pandemic", year_e == "2017" ~ "Pre-pandemic", year_e == "2018" ~ "Pre-pandemic")) %>% 
   mutate(year_e = as.numeric(year_e)) %>% 
-  filter(!year_e %in% c(2023,2007))
-
+  filter(!year_e %in% c(2023,2007)) %>% 
+  mutate(percentage_target = (number_meeting_target_aggregate/number_of_attendances_aggregate)*100)
 
 
 
