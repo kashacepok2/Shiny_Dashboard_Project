@@ -4,7 +4,7 @@ server <- function(input, output, session) {
  
 # Kasha ------------------------------------------------------------------------  
    
-  output$map_output_bed <- renderPlot(expr = {
+  output$map_output_bed <- renderLeaflet(expr = {
     beds_clean_filter <- beds_clean %>% 
       filter(date == input$date)
     
