@@ -1,28 +1,35 @@
 server <- function(input, output, session) {
-  
-   output$map_output_bed <- renderPlot(expr = {
-     
-     scotland_hb_xform %>%
-       leaflet() %>% 
-       addTiles() %>% 
-       addPolygons(label = ~hb_name,
-                   fillColor = getcolour(beds_clean$percentage), 
-                   opacity = 0.8,
-                   color = "grey40")
-   }
-   )
-   output$map_output_ae <- renderLeaflet(expr = {
-     
-     scotland_hb_xform %>%
-       leaflet() %>% 
-       addTiles() %>% 
-       addPolygons(label = ~hb_name,
-                   fillColor = getcolour(ae_times_clean$percentage), 
-                   opacity = 0.8)
-   }
-   )
+ 
+ 
+ 
+# Kasha ------------------------------------------------------------------------  
+   
+  output$map_output_bed <- renderPlot(expr = {
+    beds_clean_filter <- beds_clean %>% 
+      filter(date == input$date)
+    
+    scotland_hb_xform %>%
+      leaflet() %>% 
+      addTiles() %>% 
+      addPolygons(label = ~hb_name,
+                  fillColor = ~getcolour(beds_clean_filter$percentage), 
+                  opacity = 0.6)
+  }
+  )
+  output$map_output_ae <- renderLeaflet(expr = {
+    ae_times_clean_filter <- ae_times_clean %>% 
+      filter(date == input$date)
+    
+    scotland_hb_xform %>%
+      leaflet() %>% 
+      addTiles() %>% 
+      addPolygons(label = ~hb_name,
+                  fillColor = ~getcolour(ae_times_clean_filter$percentage), 
+                  opacity = 0.6)
+  }
+  )
   output$graph_output_bed <- renderPlot(expr = {
-    beds_clean %>% 
+    beds_clean %>%  
       group_by(hb_name, date) %>%
       summarise(Percentage = mean(percentage)) %>% 
       ggplot() +
@@ -33,7 +40,7 @@ server <- function(input, output, session) {
   }
   )
   output$graph_output_ae <- renderPlot(expr = {
-    ae_times_clean %>% 
+    ae_times_clean %>%  
       group_by(hb_name, date) %>%
       summarise(Percentage = mean(percentage)) %>% 
       ggplot() +
@@ -43,6 +50,8 @@ server <- function(input, output, session) {
       theme_classic()
   }
   )
+  
+# Euan -------------------------------------------------------------------------  
   
   output$simd_plot <- renderPlotly({
     if (input$bar_input == "simd_stack") 
@@ -194,6 +203,8 @@ server <- function(input, output, session) {
   }
   )
 
+# Ellen ------------------------------------------------------------------------  
+  
   summaries <- reactive({
     AE_activity_clean %>%
       filter(pandemic_years %in% c("Pandemic", "Pre-pandemic")) %>% 
