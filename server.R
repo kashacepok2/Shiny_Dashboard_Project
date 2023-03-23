@@ -13,7 +13,10 @@ server <- function(input, output, session) {
                   fillColor = ~getcolour(beds_clean_filter$percentage), 
                   opacity = 0.6,
                   color = "black",
-                  weight = 0.3)
+                  weight = 0.3) %>% 
+      addLegend(pal = pal,
+                values = beds_clean$percentage,
+                title = "% Bed's Occupied")
   }
   )
   output$map_output_ae <- renderLeaflet(expr = {
@@ -27,7 +30,10 @@ server <- function(input, output, session) {
                   fillColor = ~getcolour(ae_times_clean_filter$percentage), 
                   opacity = 0.6,
                   color = "black",
-                  weight = 0.3)
+                  weight = 0.3) %>% 
+    addLegend(pal = pal,
+              values = beds_clean$percentage,
+              title = "% Bed's Occupied")
   }
   )
   output$graph_output_bed <- renderPlot(expr = {

@@ -53,7 +53,9 @@ ui <- fluidPage(
      tabPanel(h4("Map"), 
               fluidRow(
                 mainPanel(
-                  leafletOutput("map_output_ae")
+                  leafletOutput("map_output_ae",
+                                width = 600,
+                                height = 1000)
                 )
               ), 
               fluidRow(
@@ -61,7 +63,8 @@ ui <- fluidPage(
                   dateInput(inputId = "date",
                             label = ("Date"),
                             min = "2018-01-01",
-                            max = "2022-07-01"
+                            max = "2022-07-01",
+                            value = "2022-04-01"
                   )
                 )
               ),
@@ -167,7 +170,9 @@ ui <- fluidPage(
      tabPanel(h4("Map"), 
               fluidRow(
                 mainPanel(
-                  leafletOutput("map_output_bed")
+                  leafletOutput("map_output_bed",
+                                width = 600,
+                                1000)
                 )
               ),
               fluidRow(
@@ -175,7 +180,8 @@ ui <- fluidPage(
                   dateInput(inputId = "date",
                             label = ("Date"),
                             min = "2018-01-01",
-                            max = "2022-07-01"
+                            max = "2022-07-01",
+                            value = "2022-04-01"
                   )
                 )
               ),

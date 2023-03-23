@@ -92,3 +92,6 @@ getcolour <- function(d) {
       
   )
 }
+
+pal <- colorNumeric(palette = c("#ffe6e6","#ff0000","#000000"),
+                    domain = c(0, 100))
