@@ -1,4 +1,3 @@
-
 server <- function(input, output, session) {
   
   output$map_output_bed <- renderPlot(expr = {
@@ -75,7 +74,6 @@ server <- function(input, output, session) {
                      text = mean_episodes) +
                  geom_col(position = "dodge") +
                  theme_minimal()+
-                 scale_fill_manual(values = c("cyan", "green4")) +
                  labs(
                    x = "\nAge Ranges",
                    y = "Mean Episodes per Location by Quarter\n",
@@ -106,7 +104,6 @@ server <- function(input, output, session) {
                      text = mean_episodes) +
                  geom_col(position = "dodge") +
                  theme_minimal() +
-                 scale_fill_manual(values = c("cyan", "green4")) +
                  labs(
                    x = "\nAge Ranges",
                    y = "Mean Episodes per Location by Quarter\n",
@@ -135,7 +132,6 @@ server <- function(input, output, session) {
                      text = mean_episodes) +
                  geom_col(position = "dodge") +
                  theme_minimal()+
-                 scale_fill_manual(values = c("cyan", "green4")) +
                  labs(
                    x = "\nAge Ranges",
                    y = "Mean Episodes per Location by Quarter\n",
@@ -165,7 +161,7 @@ server <- function(input, output, session) {
                    y = first_infections,
                    text = first_infections
                  ) +
-                 geom_col(fill = "green4")+
+                 geom_col(fill = "#F8766D")+
                  theme_minimal() +
                  labs(
                    x = "\n SIMD Quintile",
@@ -187,7 +183,7 @@ server <- function(input, output, session) {
                    y = reinfections,
                    text = reinfections
                  ) +
-                 geom_col(fill = "cyan") +
+                 geom_col(fill = "#00bfc4") +
                  theme_minimal() +
                  labs(
                    x = "\nSIMD Quintile\n",
@@ -232,12 +228,12 @@ server <- function(input, output, session) {
       labs(x = "", y = "", colour = "")
   })
   
-  output$year_plot <- renderPlot({
+  output$year_plot <- renderPlot({ expr ={
     ggplot(summaries_2(), aes(x = year, y = count_2)) +
       geom_line(group =1) +
       theme_minimal() +
       labs(x = "", y = "")
-  })
+  }})
   
   summary_table_1 <- reactive({
     treatment_activity_clean %>%
@@ -300,14 +296,14 @@ server <- function(input, output, session) {
   })
   
   summary_table_b1 <- reactive({
-    beds_clean %>%
+    beds_clean_ellen %>%
       filter(specialty_name %in% c("Surgery Grouping", "Women and Newborn Grouping", "Intensive Care Medicine", "Mental Health Grouping", "Rehabilitation Medicine")) %>% 
       group_by(year,specialty_name) %>% 
       summarise(m_year_b = mean(!!sym(input$m_1)))
   }) 
   
   summary_table_b2 <- reactive({
-    beds_clean %>%
+    beds_clean_ellen %>%
       filter(pandemic_years == input$period_1) %>% 
       filter(specialty_name %in% c("Surgery Grouping", "Women and Newborn Grouping", "Intensive Care Medicine", "Mental Health Grouping", "Rehabilitation Medicine"))%>% 
       group_by(quarter_extr, specialty_name) %>% 
