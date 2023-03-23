@@ -210,6 +210,10 @@ server <- function(input, output, session) {
     }
   }
   )
+  
+  output$mh_euan_plot <- renderPlot(
+    mh_plot_euan
+  )
 
 # Ellen ------------------------------------------------------------------------  
   
@@ -242,12 +246,12 @@ server <- function(input, output, session) {
       labs(x = "", y = "", colour = "")
   })
   
-  output$year_plot <- renderPlot({ expr ={
+  output$year_plot <- renderPlot({ 
     ggplot(summaries_2(), aes(x = year_e, y = count_2)) +
       geom_line(group =1) +
       theme_minimal() +
       labs(x = "", y = "")
-  }})
+  })
   
   summary_table_1 <- reactive({
     treatment_activity_clean %>%
@@ -347,4 +351,12 @@ server <- function(input, output, session) {
       theme_minimal() +
       labs(x = "", y = "", colour = "")
   })
+  
+  
+  
+  
 }
+
+
+
+
