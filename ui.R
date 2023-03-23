@@ -34,11 +34,13 @@ ui <- fluidPage(
                 column(width = 10, plotOutput("a_e_plot"),
                  dataTableOutput("table_output")
                )
+             )
              ),
-             
+      
       tags$br(), 
       tags$hr(), 
       tags$br(),
+ 
       
       fluidRow(
         
@@ -47,7 +49,8 @@ ui <- fluidPage(
         )
       )
             
-    )
+    
+    
     ),
      
      tabPanel(h4("Map"), 
