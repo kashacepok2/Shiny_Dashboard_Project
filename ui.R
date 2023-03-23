@@ -34,20 +34,25 @@ ui <- fluidPage(
                 column(width = 10, plotOutput("a_e_plot"),
                  dataTableOutput("table_output")
                )
+             )
              ),
-             
+      
       tags$br(), 
       tags$hr(), 
       tags$br(),
+ 
       
       fluidRow(
+        
+        HTML("<h3><b> Care Target by Healthboard </b> </h3>"), 
         
         mainPanel(
           plotOutput("graph_output_ae")
         )
       )
             
-    )
+    
+    
     ),
      
      tabPanel(h4("Map"), 
@@ -102,6 +107,7 @@ ui <- fluidPage(
                  column(width = 8, plotOutput("season_p"),
                  dataTableOutput("table_2")
                )
+             )
              ),
              
              tags$br(), 
@@ -120,7 +126,7 @@ ui <- fluidPage(
                )
              )
     )
-    ), 
+    , 
     
     tabPanel(
       h4("Bed Occupancy"), 
@@ -153,6 +159,7 @@ ui <- fluidPage(
                  dataTableOutput("table_b2")
                )
              )
+             )
             ,
              
             tags$br(), 
@@ -160,11 +167,12 @@ ui <- fluidPage(
             tags$br(),
             
              fluidRow(
+               HTML("<h3><b> Care Target by Healthboard </b> </h3>"), 
                mainPanel(
                  plotOutput("graph_output_bed")
                )
              )
-      )
+      
       ),
    
      tabPanel(h4("Map"), 
