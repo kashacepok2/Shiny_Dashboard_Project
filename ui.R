@@ -201,10 +201,10 @@ ui <- fluidPage(
           2,
           radioButtons(
             inputId = "lockdown_input",
-            label = h3("Select dates relative to first UK lockdown:"),
+            label = h3("Select dates:"),
             choices = c(
-              "Before first UK lockdown" = "pre",
-              "After first UK lockdown" = "post",
+              "Pre-pandemic" = "pre",
+              "Post-pandemic" = "post",
               "All available dates" = "both"
             )
           )
@@ -215,7 +215,8 @@ ui <- fluidPage(
           checkboxGroupInput(
             inputId = "age_input",
             label = h3("Select age ranges:"), 
-            choices = ages_list
+            choices = ages_list,
+            selected = ages_list
             )),
         column(
           6,

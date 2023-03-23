@@ -94,7 +94,7 @@ server <- function(input, output, session) {
                  theme_minimal()+
                  labs(
                    x = "\nAge Ranges",
-                   y = "Mean Episodes per Location by Quarter\n",
+                   y = "Mean Episodes per Quarter in Hospitals\n",
                    fill = "Sex",
                    title = "Episodes Across Age and Gender"
                  ) +
@@ -124,7 +124,7 @@ server <- function(input, output, session) {
                  theme_minimal() +
                  labs(
                    x = "\nAge Ranges",
-                   y = "Mean Episodes per Location by Quarter\n",
+                   y = "Mean Episodes per Quarter in Hospitals\n",
                    fill = "Sex",
                    title = "Episodes Across Age and Gender"
                  ) +
@@ -152,7 +152,7 @@ server <- function(input, output, session) {
                  theme_minimal()+
                  labs(
                    x = "\nAge Ranges",
-                   y = "Mean Quarterly Episodes per Location\n",
+                   y = "Mean Episodes per Quarter in Hospitals\\n",
                    fill = "Sex",
                    title = "Episodes Across Age and Gender"
                  ) +
