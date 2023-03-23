@@ -33,7 +33,7 @@ server <- function(input, output, session) {
                   weight = 0.3) %>% 
     addLegend(pal = pal,
               values = beds_clean$percentage,
-              title = "% Bed's Occupied")
+              title = "% Patients Meeting Target Time")
   }
   )
   output$graph_output_bed <- renderPlot(expr = {
