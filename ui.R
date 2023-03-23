@@ -1,5 +1,5 @@
 ui <- fluidPage(
-  titlePanel(title = "NHS Data"),
+  titlePanel(title = "Scottish Health Data Dashboard"),
   theme = shinytheme("flatly"),
   tabsetPanel(
     tabPanel(
