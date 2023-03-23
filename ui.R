@@ -60,7 +60,7 @@ ui <- fluidPage(
               ), 
               fluidRow(
                 sidebarPanel(
-                  dateInput(inputId = "date",
+                  dateInput(inputId = "date_ae",
                             label = ("Date"),
                             min = "2018-01-01",
                             max = "2022-07-01",
@@ -177,7 +177,7 @@ ui <- fluidPage(
               ),
               fluidRow(
                 sidebarPanel(
-                  dateInput(inputId = "date",
+                  dateInput(inputId = "date_bed",
                             label = ("Date"),
                             min = "2018-01-01",
                             max = "2022-07-01",

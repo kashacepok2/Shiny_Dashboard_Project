@@ -4,7 +4,7 @@ server <- function(input, output, session) {
    
   output$map_output_bed <- renderLeaflet(expr = {
     beds_clean_filter <- beds_clean %>% 
-      filter(date == input$date)
+      filter(date == input$date_bed)
     
     scotland_hb_xform %>%
       leaflet() %>% 
@@ -21,7 +21,7 @@ server <- function(input, output, session) {
   )
   output$map_output_ae <- renderLeaflet(expr = {
     ae_times_clean_filter <- ae_times_clean %>% 
-      filter(date == input$date)
+      filter(date == input$date_ae)
     
     scotland_hb_xform %>%
       leaflet() %>% 
