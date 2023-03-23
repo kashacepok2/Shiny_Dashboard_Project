@@ -1,26 +1,26 @@
 server <- function(input, output, session) {
   
-  output$map_output_bed <- renderPlot(expr = {
-    
-    scotland_hb_xform %>%
-      leaflet() %>% 
-      addTiles() %>% 
-      addPolygons(label = ~hb_name,
-                  fillColor = getcolour(beds_clean$percentage), 
-                  opacity = 0.8,
-                  color = "grey40")
-  }
-  )
-  output$map_output_ae <- renderLeaflet(expr = {
-    
-    scotland_hb_xform %>%
-      leaflet() %>% 
-      addTiles() %>% 
-      addPolygons(label = ~hb_name,
-                  fillColor = getcolour(ae_times_clean$percentage), 
-                  opacity = 0.8)
-  }
-  )
+   output$map_output_bed <- renderPlot(expr = {
+     
+     scotland_hb_xform %>%
+       leaflet() %>% 
+       addTiles() %>% 
+       addPolygons(label = ~hb_name,
+                   fillColor = getcolour(beds_clean$percentage), 
+                   opacity = 0.8,
+                   color = "grey40")
+   }
+   )
+   output$map_output_ae <- renderLeaflet(expr = {
+     
+     scotland_hb_xform %>%
+       leaflet() %>% 
+       addTiles() %>% 
+       addPolygons(label = ~hb_name,
+                   fillColor = getcolour(ae_times_clean$percentage), 
+                   opacity = 0.8)
+   }
+   )
   output$graph_output_bed <- renderPlot(expr = {
     beds_clean %>% 
       group_by(hb_name, date) %>%
@@ -203,7 +203,7 @@ server <- function(input, output, session) {
   
   summaries_2 <- reactive({
     AE_activity_clean %>%
-      group_by(year) %>% 
+      group_by(year_e) %>% 
       summarise(count_2 = sum(!!sym(input$measure_1)))
     
   }) 
@@ -224,7 +224,7 @@ server <- function(input, output, session) {
   })
   
   output$year_plot <- renderPlot({ expr ={
-    ggplot(summaries_2(), aes(x = year, y = count_2)) +
+    ggplot(summaries_2(), aes(x = year_e, y = count_2)) +
       geom_line(group =1) +
       theme_minimal() +
       labs(x = "", y = "")

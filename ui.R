@@ -29,32 +29,38 @@ ui <- fluidPage(
                HTML("<h3> <b> Seasonal </b> </h3>"),
                
                mainPanel(
-                 #selectInput("period", "Pandemic or Pre-pandemic", choices = c("Pandemic", "Pre-pandemic")),
                  radioButtons("measure_2", "", choices = c( "Patients attending" = "number_of_attendances_aggregate", "Patients meeting care target" = "number_meeting_target_aggregate")),
                  plotOutput("a_e_plot"),
                  dataTableOutput("table_output")
                )
              ),
-             fluidRow(
-               sidebarPanel(
-                 dateInput(inputId = "date",
-                           label = ("Date"),
-                           min = "2018-01-01",
-                           max = "2022-07-01"
-                 )
-               )
-             ),
-             fluidRow(
-               mainPanel(
-                 plotOutput("graph_output_ae")
-               )
-             ),
-             fluidRow(
-               mainPanel(
-                 leafletOutput("map_output_ae")
-               )
-             )
+             
+      
+      fluidRow(
+        mainPanel(
+          plotOutput("graph_output_ae")
+        )
+      )
+            
     ), 
+     
+     tabPanel("Map", 
+              fluidRow(
+                mainPanel(
+                  leafletOutput("map_output_ae")
+                )
+              ), 
+              fluidRow(
+                sidebarPanel(
+                  dateInput(inputId = "date",
+                            label = ("Date"),
+                            min = "2018-01-01",
+                            max = "2022-07-01"
+                  )
+                )
+              ),
+              
+     ), 
     
     tabPanel(
       h4("Hospital Activity"), 
@@ -134,26 +140,30 @@ ui <- fluidPage(
                  dataTableOutput("table_b2")
                )
              ),
-             fluidRow(
-               sidebarPanel(
-                 dateInput(inputId = "date",
-                           label = ("Date"),
-                           min = "2018-01-01",
-                           max = "2022-07-01"
-                 )
-               )
-             ),
+             
              fluidRow(
                mainPanel(
                  plotOutput("graph_output_bed")
                )
-             ),
-             fluidRow(
-               mainPanel(
-                 leafletOutput("map_output_bed")
-               )
              )
-    ),
+      ),
+   
+     tabPanel("Map", 
+              fluidRow(
+                mainPanel(
+                  leafletOutput("map_output_bed")
+                )
+              ),
+              fluidRow(
+                sidebarPanel(
+                  dateInput(inputId = "date",
+                            label = ("Date"),
+                            min = "2018-01-01",
+                            max = "2022-07-01"
+                  )
+                )
+              ),
+     ),
     tabPanel(
       h4("Demographics"),
       fluidRow(

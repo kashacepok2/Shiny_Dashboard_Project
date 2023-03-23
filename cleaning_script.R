@@ -40,17 +40,15 @@ waiting_times <- read_csv("raw_data/by_board_of_treatment/monthly_ae_waitingtime
 
 AE_activity_clean <-  
   waiting_times %>% 
-  mutate(year = str_extract(month, "\\d{4}")) %>% 
+  mutate(year_e = str_extract(month, "\\d{4}")) %>% 
   mutate(month = str_extract(month, "\\d{2}$")) %>% 
   mutate(month = case_when(month == "01" ~ "Jan", month == "02" ~ "Feb", month == "03" ~ "Mar", month == "04" ~ "Apr", month == "05" ~ "May", month == "06" ~ "June", month == "07" ~ "July", month == "08" ~ "Aug", month == "09" ~ "Sep", month == "10" ~ "Oct", month == "11" ~ "Nov", month == "12" ~ "Dec")) %>% 
   mutate(month = as.factor(month)) %>% 
   mutate(month = factor(month, levels = c("Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"))) %>% 
-  mutate(pandemic_years = case_when(year == "2020" ~ "Pandemic", year == "2021" ~ "Pandemic", year == "2017" ~ "Pre-pandemic", year == "2018" ~ "Pre-pandemic")) %>% 
-  mutate(year = as.numeric(year)) %>% 
-  filter(!year %in% c(2023,2007))
+  mutate(pandemic_years = case_when(year_e == "2020" ~ "Pandemic", year_e == "2021" ~ "Pandemic", year_e == "2017" ~ "Pre-pandemic", year_e == "2018" ~ "Pre-pandemic")) %>% 
+  mutate(year_e = as.numeric(year_e)) %>% 
+  filter(!year_e %in% c(2023,2007))
 
-
-write_csv(AE_activity_clean, "ae_activity.csv")
 
 
 
