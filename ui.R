@@ -42,6 +42,8 @@ ui <- fluidPage(
       
       fluidRow(
         
+        HTML("<h3><b> Care Targets for Different Healthboards </b> </h3>"), 
+        
         mainPanel(
           plotOutput("graph_output_ae")
         )
