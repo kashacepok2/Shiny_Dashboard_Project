@@ -160,6 +160,5 @@ post_mh <- mh_waiting_times_clean_euan %>%
        y = "Count",
        subtitle = "After the first UK COVID-19 lockdown"
   )
-
 mh_plot_euan <- pre_mh/post_mh
 

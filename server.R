@@ -202,6 +202,10 @@ server <- function(input, output, session) {
     }
   }
   )
+  
+  output$mh_euan_plot <- renderPlot(
+    mh_plot_euan
+  )
 
 # Ellen ------------------------------------------------------------------------  
   
@@ -339,4 +343,12 @@ server <- function(input, output, session) {
       theme_minimal() +
       labs(x = "", y = "", colour = "")
   })
+  
+  
+  
+  
 }
+
+
+
+

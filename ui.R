@@ -244,6 +244,16 @@ ui <- fluidPage(
           "simd_covid_plot"
           )
         )
+      ),
+      tags$br(),
+      tags$hr(),
+      tags$br(),
+      fluidRow(
+        column(
+          6,
+          offset = 3,
+          plotOutput("mh_euan_plot")
+        )
       )
     )
   ))
