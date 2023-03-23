@@ -13,7 +13,7 @@ ui <- fluidPage(
                
                sidebarLayout(
                  sidebarPanel(
-                   radioButtons("measure_1", "", choices = c("Patients attending" = "number_of_attendances_aggregate","Patients meeting care target" = "number_meeting_target_aggregate"))
+                   radioButtons("measure_1", "", choices = c("Patients attending" = "number_of_attendances_aggregate","Patients meeting care target" = "percentage_target"))
                  ),
                  mainPanel(
                    plotOutput("year_plot"),
@@ -30,7 +30,7 @@ ui <- fluidPage(
                column(width= 2, 
                
                mainPanel(
-                 radioButtons("measure_2", "", choices = c( "Patients attending" = "number_of_attendances_aggregate", "Patients meeting care target" = "number_meeting_target_aggregate")))),
+                 radioButtons("measure_2", "", choices = c( "Patients attending" = "number_of_attendances_aggregate", "Patients meeting care target" = "percentage_target")))),
                 column(width = 10, plotOutput("a_e_plot"),
                  dataTableOutput("table_output")
                )
