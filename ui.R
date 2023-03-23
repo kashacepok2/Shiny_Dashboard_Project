@@ -197,9 +197,10 @@ ui <- fluidPage(
             inputId =  "bar_input", 
             label = h3("Select bar style for SIMD plot:"), 
             choices = c(
+              "Stacked Bar" = "simd_stack",
               "Side-by-Side Bar" = "simd_dodge",
-              "Horizontal Bar" = "simd_flip",
-              "Stacked Bar" = "simd_stack")
+              "Horizontal Bar" = "simd_flip"
+              )
           )
         ),
         column(
