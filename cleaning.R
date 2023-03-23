@@ -145,9 +145,9 @@ pre_mh <- mh_waiting_times_clean_euan %>%
   theme_minimal() +
   labs(x = "",
        y = "Count",
-       title = "Distribution of Healthboards Meeting Target Children and Adolescents 
-Mental Health Referral Times",
-subtitle = "\nBefore the first UK COVID-19 lockdown"
+       title = "Distribution of Percentage of Children who were Given a Referral in 
+       Target Time each Month by Scottish Healthboards ",
+subtitle = "\nPost-Pandemic"
   )
 
 post_mh <- mh_waiting_times_clean_euan %>% 
@@ -158,7 +158,10 @@ post_mh <- mh_waiting_times_clean_euan %>%
   theme_minimal() +
   labs(x = "Percentage of Patients Seen in the Target Timeframe",
        y = "Count",
-       subtitle = "After the first UK COVID-19 lockdown"
+       subtitle = "Pre-Pandemic"
   )
 mh_plot_euan <- pre_mh/post_mh
 
+
+mh_waiting_times_clean_euan %>% 
+  distinct(hb)
