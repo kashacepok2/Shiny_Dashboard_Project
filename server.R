@@ -1,7 +1,5 @@
 server <- function(input, output, session) {
  
- 
- 
 # Kasha ------------------------------------------------------------------------  
    
   output$map_output_bed <- renderLeaflet(expr = {
@@ -13,7 +11,9 @@ server <- function(input, output, session) {
       addTiles() %>% 
       addPolygons(label = ~hb_name,
                   fillColor = ~getcolour(beds_clean_filter$percentage), 
-                  opacity = 0.6)
+                  opacity = 0.6,
+                  color = "black",
+                  weight = 0.3)
   }
   )
   output$map_output_ae <- renderLeaflet(expr = {
@@ -25,7 +25,9 @@ server <- function(input, output, session) {
       addTiles() %>% 
       addPolygons(label = ~hb_name,
                   fillColor = ~getcolour(ae_times_clean_filter$percentage), 
-                  opacity = 0.6)
+                  opacity = 0.6,
+                  color = "black",
+                  weight = 0.3)
   }
   )
   output$graph_output_bed <- renderPlot(expr = {
@@ -36,7 +38,10 @@ server <- function(input, output, session) {
       aes(x = date, y = Percentage, colour = hb_name) +
       geom_line() +
       scale_colour_manual(values = c("yellow1", "darkorchid4", "burlywood3", "firebrick4", "forestgreen", "hotpink", "darkorange3",  "palegreen2", "cadetblue2", "orchid3", "black", "navy", "antiquewhite4", "sienna2")) +
-      theme_classic()
+      theme_minimal() +
+      labs(x = "Date",
+           y = "Percentage of Beds Occupied",
+           colour = "Healthboard")
   }
   )
   output$graph_output_ae <- renderPlot(expr = {
@@ -47,7 +52,10 @@ server <- function(input, output, session) {
       aes(x = date, y = Percentage, colour = hb_name) +
       geom_line() +
       scale_colour_manual(values = c("yellow1", "darkorchid4", "burlywood3", "firebrick4", "forestgreen", "hotpink", "darkorange3",  "palegreen2", "cadetblue2", "orchid3", "black", "navy", "antiquewhite4", "sienna2")) +
-      theme_classic()
+      theme_minimal() +
+      labs(x = "Date",
+           y = "Percentage Meeting Target Time",
+           colour = "Healthboard")
   }
   )
   
