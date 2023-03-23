@@ -107,6 +107,7 @@ ui <- fluidPage(
                  column(width = 8, plotOutput("season_p"),
                  dataTableOutput("table_2")
                )
+             )
              ),
              
              tags$br(), 
@@ -125,7 +126,7 @@ ui <- fluidPage(
                )
              )
     )
-    ), 
+    , 
     
     tabPanel(
       h4("Bed Occupancy"), 
@@ -158,6 +159,7 @@ ui <- fluidPage(
                  dataTableOutput("table_b2")
                )
              )
+             )
             ,
              
             tags$br(), 
@@ -169,7 +171,7 @@ ui <- fluidPage(
                  plotOutput("graph_output_bed")
                )
              )
-      )
+      
       ),
    
      tabPanel(h4("Map"), 
