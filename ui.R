@@ -204,7 +204,7 @@ ui <- fluidPage(
             label = h3("Select dates:"),
             choices = c(
               "Pre-pandemic" = "pre",
-              "Post-pandemic" = "post",
+              "Pandemic" = "post",
               "All available dates" = "both"
             )
           )

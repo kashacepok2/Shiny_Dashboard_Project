@@ -158,7 +158,7 @@ post_mh <- mh_waiting_times_clean_euan %>%
   theme_minimal() +
   labs(x = "Percentage of Patients Seen in the Target Timeframe",
        y = "Count",
-       subtitle = "Post-Pandemic"
+       subtitle = "Pandemic"
   )
 mh_plot_euan <- pre_mh/post_mh
 
