@@ -147,7 +147,7 @@ pre_mh <- mh_waiting_times_clean_euan %>%
        y = "Count",
        title = "Distribution of Percentage of Children who were Given a Referral in 
        Target Time each Month by Scottish Healthboards ",
-subtitle = "\nPost-Pandemic"
+subtitle = "\nPre-Pandemic"
   )
 
 post_mh <- mh_waiting_times_clean_euan %>% 
@@ -158,7 +158,7 @@ post_mh <- mh_waiting_times_clean_euan %>%
   theme_minimal() +
   labs(x = "Percentage of Patients Seen in the Target Timeframe",
        y = "Count",
-       subtitle = "Pre-Pandemic"
+       subtitle = "Post-Pandemic"
   )
 mh_plot_euan <- pre_mh/post_mh
 
